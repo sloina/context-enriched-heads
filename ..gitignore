@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# experiment outputs (never committed)
+runs/
+*.npz
+*.score
+*.log
+
+# heads and models EXCEPT the released baselines
+*.pt
+!checkpoints/*.pt
+
+# OS / editors
+.DS_Store
+Thumbs.db
