@@ -3,8 +3,8 @@
 # Trains a small linear classifier over context windows of backbone hidden
 # states centered at the peak-scoring frame, as described in:
 #
-#   A. Sloin, "Pooling Data to Retrain and Expand the Linear Decision Head
-#   for Wake-Word Detection", submitted to ICASSP 2027.
+#   A. Sloin, "Context-Enriched Heads for Wake-Word Detection",
+#   submitted to ICASSP 2027.
 #
 # Feature variants (H = backbone hidden size, window = 2K+1 frames):
 #   v1     window mean                                             (H)

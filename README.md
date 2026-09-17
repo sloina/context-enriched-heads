@@ -1,4 +1,4 @@
-﻿# Context-Enriched Heads for Wake-Word Detection
+# Context-Enriched Heads for Wake-Word Detection
 
 Code accompanying the ICASSP 2027 submission:
 
@@ -6,8 +6,8 @@ Code accompanying the ICASSP 2027 submission:
 > submitted to ICASSP 2027.
 
 A frozen max-pooling wake-word detector is used as a localizer; a small
-linear head (65â€“386 parameters) is then trained on pooled statistics of
-the backbone hidden states in a Â±150 ms window around each candidate
+linear head (65-386 parameters) is then trained on pooled statistics of
+the backbone hidden states in a +/-150 ms window around each candidate
 peak, replacing the peak-posterior threshold decision. Head training and
 inference run entirely on CPU.
 
@@ -41,16 +41,16 @@ baseline (details, all variants, and cleaned-set numbers in the paper):
 
 | Corpus (backbone) | Operating point | Baseline | +V3 head (386 params) |
 |---|---|---|---|
-| Hey Snips (DS-TCN, 22k) | 1.0 FA/h | 2.81 | **0.79 Â± 0.03** (logistic) |
-| Mobvoi Hi Xiaowen (MDTC, 160k) | 0.5 FA/h | 0.80 | **0.56 Â± 0.05** (hinge) |
-| Mobvoi Nihao Wenwen (MDTC, 160k) | 0.5 FA/h | 0.55 | **0.47 Â± 0.01** (hinge) |
+| Hey Snips (DS-TCN, 22k) | 1.0 FA/h | 2.81 | **0.79 +/- 0.03** (logistic) |
+| Mobvoi Hi Xiaowen (MDTC, 160k) | 0.5 FA/h | 0.80 | **0.56 +/- 0.05** (hinge) |
+| Mobvoi Nihao Wenwen (MDTC, 160k) | 0.5 FA/h | 0.55 | **0.47 +/- 0.01** (hinge) |
 
 Head training and inference run on CPU; the added decision latency is
 150 ms (15 future frames).
 
 ## Requirements
 
-- Python 3.9+, PyTorch (CPU is sufficient for stages 2â€“3), NumPy, PyYAML
+- Python 3.9+, PyTorch (CPU is sufficient for stages 2-3), NumPy, PyYAML
 - [wekws](https://github.com/wenet-e2e/wekws) (Apache-2.0), installed and
   able to train/evaluate its Hey Snips DS-TCN and Mobvoi MDTC recipes.
   `extract_features.py` runs from within a wekws checkout (it imports
@@ -101,7 +101,7 @@ Head training and inference run on CPU; the added decision latency is
 If you use this code, please cite the paper above. A full reference will
 be added after the review process.
 
-Author: Alba Sloin, Independent Researcher â€”
+Author: Alba Sloin, Independent Researcher --
 [ORCID 0009-0009-5953-1459](https://orcid.org/0009-0009-5953-1459).
 
 ## License
