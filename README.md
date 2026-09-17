@@ -98,11 +98,16 @@ Head training and inference run on CPU; the added decision latency is
 
 ## Citation
 
-If you use this code, please cite the paper above. A full reference will
-be added after the review process.
+If you use this code, please cite:
+
+```
+A. Sloin, "Context-Enriched Heads for Wake-Word Detection,"
+submitted to ICASSP 2027.
+```
 
 Author: Alba Sloin, Independent Researcher --
 [ORCID 0009-0009-5953-1459](https://orcid.org/0009-0009-5953-1459).
+A full citation will be added after the review process.
 
 ## License
 
