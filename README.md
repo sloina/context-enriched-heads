@@ -95,7 +95,8 @@ from the same backbone pass, evaluated with the same counting.
 - Python 3.9+, PyTorch (CPU is sufficient for stages 2-3), NumPy, PyYAML
 - [wekws](https://github.com/wenet-e2e/wekws) (Apache-2.0), installed and
   able to run its Hey Snips DS-TCN and Mobvoi MDTC recipes. The
-  experiments used commit `e5e1ea90b181bca1328879bdbad5282905aa1bcd`; `main` is a moving target.
+  experiments used a copy of upstream `main` taken in August 2026; `main`
+  is a moving target, so a later checkout may need small adjustments.
   `extract_features.py` and `score_heads_protocols.py` run from within a
   wekws checkout (they import `wekws.dataset`, `wekws.model`,
   `wekws.utils`) and call `model.forward_with_features(...)`, a small
