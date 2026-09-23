@@ -7,14 +7,18 @@
 #   submitted to ICASSP 2027.
 #
 # Feature variants (H = backbone hidden size, window = 2K+1 frames):
+#   anchor peak frame only, no context                             (H)
 #   v1     window mean                                             (H)
 #   v2     mean + peak frame + peak score                          (2H+1)
 #   v2.5   means of the three window thirds                        (3H)
 #   v3     thirds + peak frame + max + std + peak score            (6H+1)
 #
 # Losses:  hinge = clamp(1 - margin, 0);  ce = softplus(-margin) (logistic).
-# Model selection: --select best (best dev-FRR epoch) or last (final epoch,
-# full-convergence protocol; watch the loss column for a plateau).
+# Model selection: the paper uses --select last (final epoch, full-
+# convergence protocol; watch the loss column for a plateau). --select
+# best keeps the best dev-FRR epoch; the dev metric is a simple
+# frame-level count without the refractory window, so it is only a
+# monitor, not the paper's evaluation.
 #
 # Runs entirely on CPU.
 
@@ -38,6 +42,9 @@ def build_feature(windows, peak_scores, variant, K):
     N, W, H = windows.shape
     assert W == 2 * K + 1
     t_star = K
+
+    if variant == 'anchor':
+        return windows[:, t_star, :]
 
     mean_t = windows.mean(axis=1)
 
@@ -182,7 +189,7 @@ def main():
     ap.add_argument('--dev_feats', required=True)
     ap.add_argument('--dev_list', required=True)
     ap.add_argument('--variant', default='v1',
-                    choices=['v1', 'v2', 'v2.5', 'v3'])
+                    choices=['anchor', 'v1', 'v2', 'v2.5', 'v3'])
     ap.add_argument('--context', type=int, default=15)
     ap.add_argument('--stored_k', type=int, default=None)
     ap.add_argument('--epochs', type=int, default=300)

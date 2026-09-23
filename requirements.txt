@@ -1,5 +1,5 @@
 # Stage-2 (head training/scoring/eval) dependencies.
-# Feature extraction additionally requires a patched wekws checkout
+# Feature extraction and test scoring additionally require a patched wekws checkout
 # (see PATCH_wekws_feature_extraction.md) and its own dependencies.
 numpy
 torch

@@ -6,6 +6,19 @@
 # this script saves backbone representations (hidden states) in a window
 # around candidate peaks, for training the linear decision head.
 #
+# TRAIN / DEV ONLY. This is the sampling rule that builds the head's
+# training (and dev) pool; it reads the utterance label:
+#   keyword utterance : one window, at the global argmax of the baseline
+#                       posterior (after masking the first --min_duration
+#                       frames, as in the max-pooling loss);
+#   filler utterance  : up to --peaks_cap interior local maxima with
+#                       posterior >= --pre_thresh, hardest first; if there
+#                       is none, the global argmax, so every utterance is
+#                       represented in the pool.
+# The test set is NOT extracted with this script. Test-time candidates
+# are selected label-blind, without cap or fallback, inside
+# score_heads_protocols.py (see the README).
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 
 from __future__ import print_function
@@ -32,7 +45,7 @@ def get_args():
         description='extract backbone features around score peaks')
     parser.add_argument('--config', required=True, help='config file')
     parser.add_argument('--test_data', required=True,
-                        help='data list file (train/dev/test)')
+                        help='data list file (train or dev split)')
     parser.add_argument('--dict', default='./dict', help='dict dir')
     parser.add_argument('--gpu', type=int, default=-1,
                         help='gpu id for this rank, -1 for cpu')
@@ -124,11 +137,14 @@ def main():
     test_dataset = init_dataset(data_list_file=args.test_data,
                                 conf=test_conf, tokenizer=tokenizer,
                                 split='test')
+    loader_kwargs = {}
+    if args.num_workers > 0:      # prefetch_factor is invalid with 0 workers
+        loader_kwargs['prefetch_factor'] = args.prefetch
     test_data_loader = DataLoader(test_dataset,
                                   batch_size=None,
                                   pin_memory=args.pin_memory,
                                   num_workers=args.num_workers,
-                                  prefetch_factor=args.prefetch)
+                                  **loader_kwargs)
 
     model = init_model(configs['model'])
     load_checkpoint(model, args.checkpoint)
