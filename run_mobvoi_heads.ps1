@@ -8,8 +8,9 @@
 #            the dense baseline posterior of each keyword is written from
 #            the same pass
 #   eval     exact event-based FRR at FA = 0.5/h on the full test set and
-#            on the three cleaned test lists of the label-noise audit
-#            (https://github.com/sloina/mobvoi-audit)
+#            on the three cumulative cleaning levels of the label-noise
+#            audit (-bad, -ultra, -vh), built by make_clean_lists.py from
+#            the removed-key snapshots in audit_lists/
 # Completed steps are skipped, so an interrupted run can be re-run.
 #
 # Edit the path block, then run:
@@ -19,19 +20,12 @@
 $CODE   = $PSScriptRoot                      # this repository
 $WEKWS  = "C:\path\to\wekws"                 # patched wekws checkout (PATCH_wekws_feature_extraction.md)
 $DATA   = "C:\path\to\mobvoi_workdir"        # margin_features_K31_kw{0,1}\{train,dev}, mobvoi_{dev,test}_data.list
-$AUDIT  = "C:\path\to\mobvoi-audit"          # cleaned test lists from the audit release
 $CONFIG = "$WEKWS\examples\hi_xiaowen\s0\exp\mdtc\config.yaml"
 $DICT   = "$WEKWS\examples\hi_xiaowen\s0\dict"
 $CKPT   = "$CODE\checkpoints\mobvoi_mdtc_avg30.pt"
 $SEEDS  = @(1, 2, 3)
 $N_TEST = 73459                              # utterances in mobvoi_test_data.list (pass sanity check)
-# test lists: full, then the audit's cleaning levels (names as released)
-$LEVELS = @(
-  @{ name = "full";   file = "$DATA\mobvoi_test_data.list" },
-  @{ name = "-bad";   file = "$AUDIT\mobvoi_test_nobad.list" },
-  @{ name = "-ultra"; file = "$AUDIT\mobvoi_test_nobad_noultra.list" },
-  @{ name = "-vh";    file = "$AUDIT\mobvoi_test_nobad_novh.list" }
-)
+$KEYS   = "$CODE\audit_lists"   # removed-key snapshots (see README there)
 # ---------------------------------------------------------------------------
 
 $RUNS    = "$DATA\runs"
@@ -41,6 +35,20 @@ $PROTO   = "$CODE\score_heads_protocols.py"
 $EXACT   = "$CODE\frr_at_fa_exact.py"
 $SUMMARY = "$RUNS\summary_mobvoi_heads.txt"
 $FA      = 0.5
+$LISTS   = "$RUNS\lists"
+
+# --- cleaning levels: built from the removed-key snapshots (cumulative) -------
+if (-not (Test-Path "$LISTS\mobvoi_test_nobad_noultra_novh.list")) {
+  python "$CODE\make_clean_lists.py" --test_list "$DATA\mobvoi_test_data.list" `
+    --keys_dir $KEYS --out_dir $LISTS
+  if ($LASTEXITCODE -ne 0) { throw "building the cleaned test lists failed" }
+}
+$LEVELS = @(
+  @{ name = "full";   file = "$DATA\mobvoi_test_data.list" },
+  @{ name = "-bad";   file = "$LISTS\mobvoi_test_nobad.list" },
+  @{ name = "-ultra"; file = "$LISTS\mobvoi_test_nobad_noultra.list" },
+  @{ name = "-vh";    file = "$LISTS\mobvoi_test_nobad_noultra_novh.list" }
+)
 
 $kws = @(
   @{ kw = "kw0"; keyword = "<HI_XIAOWEN>";   idx = 0 },

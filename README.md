@@ -12,8 +12,10 @@ peak, replacing the peak-posterior threshold decision. Head training and
 inference run entirely on CPU.
 
 The label-noise audit of the Mobvoi corpus described in Sec. 4.3 of the
-paper, including the cleaned test lists used below, is released
-separately: **<https://github.com/sloina/mobvoi-audit>**.
+paper is released separately: **<https://github.com/sloina/mobvoi-audit>**.
+The exact removed-key lists behind the paper's cleaning levels are
+snapshotted in `audit_lists/` here so that Table 2 stays reproducible
+while the audit continues.
 
 ## Contents
 
@@ -29,6 +31,11 @@ score_heads_protocols.py   stage 3: score every head on the TEST set in one
                            protocol; writes wekws-format score files
 frr_at_fa_exact.py         FRR at a target FA/h by exact event counting
                            (alarm events with a 500 ms refractory window)
+make_clean_lists.py        builds the three cleaned Mobvoi test lists of
+                           Table 2 from the removed-key snapshots
+audit_lists/               removed-key snapshots (-bad / -ultra / -vh) as
+                           used for the submitted results; frozen, see the
+                           README inside (the live audit is in mobvoi-audit)
 run_snips_heads.ps1        reproduces Table 1 (Hey Snips, DS-TCN backbone)
 run_mobvoi_heads.ps1       reproduces Table 2 (Mobvoi, MDTC backbone, four
                            cleaning levels of the test set)
@@ -105,8 +112,9 @@ from the same backbone pass, evaluated with the same counting.
 - **Data:** Mobvoi Hotwords is freely available from
   [OpenSLR SLR87](https://www.openslr.org/87/). The Hey Snips corpus is
   distributed by Sonos upon request (see the wekws Hey Snips recipe for
-  the current procedure). The cleaned Mobvoi test lists come from the
-  audit repository above.
+  the current procedure). The cleaned Mobvoi test lists are built by
+  `make_clean_lists.py` from the snapshots in `audit_lists/` (the Mobvoi
+  run script does this automatically).
 - The run scripts are PowerShell (the experiments were run on Windows);
   they are thin loops over the three Python entry points and translate
   directly to bash.
@@ -158,6 +166,14 @@ submitted to ICASSP 2027.
 Author: Alba Sloin, Independent Researcher --
 [ORCID 0009-0009-5953-1459](https://orcid.org/0009-0009-5953-1459).
 A full citation will be added after the review process.
+
+## Acknowledgment
+
+Generative AI tools (OpenAI ChatGPT, Anthropic Claude) assisted with
+implementing and reviewing the code in this repository, following the
+author's specifications, and with editing this README. The experiments,
+audit annotations, and all reported results were produced and verified
+by the author.
 
 ## License
 
